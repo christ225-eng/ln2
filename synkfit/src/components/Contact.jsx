@@ -1,4 +1,37 @@
+import { useState } from "react";
+
 function Contact() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    await fetch("https://hook.eu1.make.com/47tk163vxujp7da1hndu6o33fgbbg1ol", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: formData.name,
+        email: formData.email,
+        date: new Date().toISOString(),
+      }),
+    });
+
+    alert("Inscription envoyée !");
+    setFormData({ name: "", email: "" });
+  };
+
   return (
     <section className="contact" id="contact">
       <div className="contact-left">
@@ -11,9 +44,25 @@ function Contact() {
       </div>
 
       <div className="contact-form-card">
-        <form className="contact-form">
-          <input type="text" placeholder="Votre nom" />
-          <input type="email" placeholder="Votre email" />
+        <form className="contact-form" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="name"
+            placeholder="Votre nom"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            type="email"
+            name="email"
+            placeholder="Votre email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+
           <button type="submit" className="btn-primary">
             Recevoir les infos
           </button>
